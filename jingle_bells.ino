@@ -1,30 +1,30 @@
-// Definición de las notas musicales y sus frecuencias
-#define NOTE_B3  247
-#define NOTE_E4  330
-#define NOTE_G4  392
-#define NOTE_A4  440
-#define NOTE_B4  494
-#define NOTE_C5  523
-#define NOTE_D5  587
-#define NOTE_E5  659
-#define NOTE_F5  698
-#define NOTE_G5  784
-#define NOTE_A5  880
-#define NOTE_B5  988
+// Definición de las notas musicales y sus frecuencias (notación en español)
+#define NOTA_SI3  247
+#define NOTA_MI4  330
+#define NOTA_SOL4 392
+#define NOTA_LA4  440
+#define NOTA_SI4  494
+#define NOTA_DO5  523
+#define NOTA_RE5  587
+#define NOTA_MI5  659
+#define NOTA_FA5  698
+#define NOTA_SOL5 784
+#define NOTA_LA5  880
+#define NOTA_SI5  988
 
 // Pin del zumbador
 const int buzzerPin = 8;
 
 // Melodía de "Jingle Bells"
 int melody[] = {
-  NOTE_E5, NOTE_E5, NOTE_E5,
-  NOTE_E5, NOTE_E5, NOTE_E5,
-  NOTE_E5, NOTE_G5, NOTE_C5, NOTE_D5,
-  NOTE_E5,
-  NOTE_F5, NOTE_F5, NOTE_F5, NOTE_F5,
-  NOTE_F5, NOTE_E5, NOTE_E5, NOTE_E5, NOTE_E5,
-  NOTE_E5, NOTE_D5, NOTE_D5, NOTE_E5,
-  NOTE_D5, NOTE_G5
+  NOTA_MI5, NOTA_MI5, NOTA_MI5,
+  NOTA_MI5, NOTA_MI5, NOTA_MI5,
+  NOTA_MI5, NOTA_SOL5, NOTA_DO5, NOTA_RE5,
+  NOTA_MI5,
+  NOTA_FA5, NOTA_FA5, NOTA_FA5, NOTA_FA5,
+  NOTA_FA5, NOTA_MI5, NOTA_MI5, NOTA_MI5, NOTA_MI5,
+  NOTA_MI5, NOTA_RE5, NOTA_RE5, NOTA_MI5,
+  NOTA_RE5, NOTA_SOL5
 };
 
 // Duración de las notas
