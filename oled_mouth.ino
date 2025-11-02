@@ -45,7 +45,71 @@ void setup() {
   display.clearDisplay();
   display.display(); // Actualizar la pantalla
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+void rieASerio() {
+  sonrie();
+  delay(500);
+  const int pasos = 30;
+  for (int j = 10; j <= pasos; j+=3) { //10,13,16,19,22,25,28
+    display.clearDisplay();
+    for (int i = 0; i <= ANCHO_LINEA; i++) {
+       display.drawCircleHelper(CENTRO_X_1-1, CENTRO_Y_1-(j*2), (RADIO_1-i)*(j*.11), 4, SSD1306_WHITE); // Cuarto inferior izquierdo
+       display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1-(j*2), (RADIO_1-i)*(j*.11), 8, SSD1306_WHITE); // Cuarto inferior derecho
+       display.drawLine(CENTRO_X_1-RADIO_1, CENTRO_Y_1+i, CENTRO_X_1+RADIO_1, CENTRO_Y_1+i, SSD1306_WHITE);
+    }
+    display.fillRect(CENTRO_X_1-25, CENTRO_Y_1+3, ANCHO_DIENTE, ALTO_DIENTE-(j-10), SSD1306_WHITE); // Diente izquierdo
+    display.fillRect(CENTRO_X_1+25-ANCHO_DIENTE+1, CENTRO_Y_1+3, ANCHO_DIENTE, ALTO_DIENTE-(j-10), SSD1306_WHITE); // Diente derecho
+    display.display();
+    delay(100); // 30 pasos * 100ms = 3 segundos
+  }
+  serio();
+}
+
+
+
+/////////////////////
+void tristeASerio() {
+  triste();
+  delay(500);
+  const int pasos = 30;
+  for (int j = 10; j <= pasos; j+=3) {
+    display.clearDisplay();
+      // Cara triste
+    for (int i = 0; i <= ANCHO_LINEA; i++) {
+      // El centro del círculo está en (CENTRO_X_1, CENTRO_Y_1) con un radio de RADIO_1 y dibuja ANCHO_LINEA veces para darle espesor
+      display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 1, SSD1306_WHITE); // Cuarto inferior izquierdo
+      display.drawCircleHelper(CENTRO_X_1-1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 2, SSD1306_WHITE); // Cuarto inferior derecho
+    }
+
+    display.display();
+    delay(100); 
+  }
+  serio();
+}
+
+/////////////////////
+void serioATriste() {
+  serio();
+  delay(500);
+  const int pasos = 30;
+  for (int j = pasos; j >= 10; j-=3) {
+    display.clearDisplay();
+    // Cara triste
+    for (int i = 0; i <= ANCHO_LINEA; i++) {
+      // El centro del círculo está en (CENTRO_X_1, CENTRO_Y_1) con un radio de RADIO_1 y dibuja ANCHO_LINEA veces para darle espesor
+      display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 1, SSD1306_WHITE); // Cuarto inferior izquierdo
+      display.drawCircleHelper(CENTRO_X_1-1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 2, SSD1306_WHITE); // Cuarto inferior derecho
+    }
+    display.display();
+    delay(100); 
+  }
+  triste();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///
 void sonrie() {
   display.clearDisplay();
   // Dibuja una sonrisa de boca abierta con dos dientes.
@@ -88,63 +152,8 @@ void triste() {
   }
   display.display();
 }
-
-
-void transicionSonrisaASerio() {
-  const int pasos = 30;
-  for (int i = 0; i <= pasos; i++) {
-   // Dibuja una línea recta para una boca seria
-    for (int i = 0; i <= ANCHO_LINEA; i++) {
-    display.drawLine(CENTRO_X_1-RADIO_1, CENTRO_Y_1+i, CENTRO_X_1+RADIO_1, CENTRO_Y_1+i, SSD1306_WHITE);
-    }
-   
-    display.display();
-    delay(100); // 30 pasos * 100ms = 3 segundos
-  }
-}
-
-void tristeASerio() {
-  triste();
-  delay(500);
-  const int pasos = 30;
-  for (int j = 10; j <= pasos; j+=3) {
-    display.clearDisplay();
-   
-    // Cara triste
-    for (int i = 0; i <= ANCHO_LINEA; i++) {
-      // El centro del círculo está en (CENTRO_X_1, CENTRO_Y_1) con un radio de RADIO_1 y dibuja ANCHO_LINEA veces para darle espesor
-      display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 1, SSD1306_WHITE); // Cuarto inferior izquierdo
-      display.drawCircleHelper(CENTRO_X_1-1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 2, SSD1306_WHITE); // Cuarto inferior derecho
-    }
-
-    display.display();
-    delay(100); 
-  }
-  serio();
-}
-
-
-void serioATriste() {
-  serio();
-  delay(500);
-  const int pasos = 30;
-  for (int j = pasos; j >= 10; j-=3) {
-    display.clearDisplay();
-   
-    // Cara triste
-    for (int i = 0; i <= ANCHO_LINEA; i++) {
-      // El centro del círculo está en (CENTRO_X_1, CENTRO_Y_1) con un radio de RADIO_1 y dibuja ANCHO_LINEA veces para darle espesor
-      display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 1, SSD1306_WHITE); // Cuarto inferior izquierdo
-      display.drawCircleHelper(CENTRO_X_1-1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 2, SSD1306_WHITE); // Cuarto inferior derecho
-    }
-
-    display.display();
-    delay(100); 
-  }
-  triste();
-}
-
-
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void loop() {
   // Ciclo completo de animación con transiciones
@@ -155,10 +164,11 @@ void loop() {
   //serio();
   //delay(5000);
   //triste();
+  rieASerio();
   delay(5000);
-  tristeASerio();
-  delay(5000);
-  serioATriste();
+  //tristeASerio();
+  //delay(5000);
+  //serioATriste();
   // 2. Transición de sonrisa a serio (3 segundos)
   //transicionSonrisaASerio();
 
