@@ -10,6 +10,16 @@
   - Arduino Leonardo: SDA (2), SCL (3)
 */
 
+/*
+  Optimización para Arduino Nano:
+  Este código ha sido refactorizado para optimizar el uso de la memoria Flash,
+  un recurso limitado en microcontroladores como el Arduino Nano.
+  Las funciones de animación duplicadas (por ejemplo, rieASerio y serioARie)
+  se han consolidado en funciones únicas que aceptan un parámetro booleano
+  para invertir la animación. Esto reduce significativamente el tamaño del
+  código compilado y mejora la mantenibilidad.
+*/
+
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -48,80 +58,86 @@ void setup() {
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void rieASerio() {
-  sonrie();
+/*
+  Anima la transición entre la sonrisa y la cara seria.
+  - Si 'inversa' es 'false', la animación va de 'sonrie' a 'serio'.
+  - Si 'inversa' es 'true', la animación va de 'serio' a 'sonrie'.
+  Esta función unificada reduce la duplicación de código y el tamaño del programa.
+*/
+void animarSonrisa(bool inversa) {
+  // Define el estado inicial de la animación
+  if (inversa) {
+    serio();
+  } else {
+    sonrie();
+  }
+
   const int pasos = 30;
-  for (int j = 1; j <= pasos; j+=2) { //10,13,16,19,22,25,28
+
+  // Configura los parámetros del bucle según la dirección de la animación
+  int j_inicial = inversa ? pasos : 1;
+  int j_final = inversa ? 1 : pasos;
+  int j_incremento = inversa ? -2 : 2;
+
+  // Bucle de animación unificado
+  for (int j = j_inicial; (inversa ? j >= j_final : j <= j_final); j += j_incremento) {
     display.clearDisplay();
     for (int i = 0; i <= ANCHO_LINEA; i++) {
-       display.drawCircleHelper(CENTRO_X_1-1, CENTRO_Y_1-(j*2), (RADIO_1-i+j/2), 4, SSD1306_WHITE); // Cuarto inferior izquierdo
-       display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1-(j*2), (RADIO_1-i+j/2), 8, SSD1306_WHITE); // Cuarto inferior derecho
-       display.drawLine(CENTRO_X_1-RADIO_1, CENTRO_Y_1+i, CENTRO_X_1+RADIO_1, CENTRO_Y_1+i, SSD1306_WHITE);
+       display.drawCircleHelper(CENTRO_X_1 - 1, CENTRO_Y_1 - (j * 2), (RADIO_1 - i + j / 2), 4, SSD1306_WHITE); // Cuarto inferior izquierdo
+       display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1 - (j * 2), (RADIO_1 - i + j / 2), 8, SSD1306_WHITE);     // Cuarto inferior derecho
+       display.drawLine(CENTRO_X_1 - RADIO_1, CENTRO_Y_1 + i, CENTRO_X_1 + RADIO_1, CENTRO_Y_1 + i, SSD1306_WHITE);
     }
-    display.fillRect(CENTRO_X_1-25, CENTRO_Y_1+3, ANCHO_DIENTE, ALTO_DIENTE-(j+5), SSD1306_WHITE); // Diente izquierdo
-    display.fillRect(CENTRO_X_1+25-ANCHO_DIENTE+1, CENTRO_Y_1+3, ANCHO_DIENTE, ALTO_DIENTE-(j+5), SSD1306_WHITE); // Diente derecho
+    display.fillRect(CENTRO_X_1 - 25, CENTRO_Y_1 + 3, ANCHO_DIENTE, ALTO_DIENTE - (j + 5), SSD1306_WHITE);             // Diente izquierdo
+    display.fillRect(CENTRO_X_1 + 25 - ANCHO_DIENTE + 1, CENTRO_Y_1 + 3, ANCHO_DIENTE, ALTO_DIENTE - (j + 5), SSD1306_WHITE); // Diente derecho
     display.display();
-    delay(50); // 30 pasos * 100ms = 3 segundos
+    delay(50);
   }
-  serio();
+
+  // Define el estado final de la animación
+  if (inversa) {
+    sonrie();
+  } else {
+    serio();
+  }
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void serioARie() {
-  serio();
+/*
+  Anima la transición entre la cara seria y la cara triste.
+  - Si 'inversa' es 'false', la animación va de 'serio' a 'triste'.
+  - Si 'inversa' es 'true', la animación va de 'triste' a 'serio'.
+  Esta función unificada reduce la duplicación de código y el tamaño del programa.
+*/
+void animarTristeza(bool inversa) {
+  if (inversa) {
+    triste();
+  } else {
+    serio();
+  }
+
   const int pasos = 30;
-  for (int j = pasos; j >= 1; j-=2) { //10,13,16,19,22,25,28
-    display.clearDisplay();
-    for (int i = 0; i <= ANCHO_LINEA; i++) {
-       display.drawCircleHelper(CENTRO_X_1-1, CENTRO_Y_1-(j*2), (RADIO_1-i+j/2), 4, SSD1306_WHITE); // Cuarto inferior izquierdo
-       display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1-(j*2), (RADIO_1-i+j/2), 8, SSD1306_WHITE); // Cuarto inferior derecho
-       display.drawLine(CENTRO_X_1-RADIO_1, CENTRO_Y_1+i, CENTRO_X_1+RADIO_1, CENTRO_Y_1+i, SSD1306_WHITE);
-    }
-    display.fillRect(CENTRO_X_1-25, CENTRO_Y_1+3, ANCHO_DIENTE, ALTO_DIENTE-(j+5), SSD1306_WHITE); // Diente izquierdo
-    display.fillRect(CENTRO_X_1+25-ANCHO_DIENTE+1, CENTRO_Y_1+3, ANCHO_DIENTE, ALTO_DIENTE-(j+5), SSD1306_WHITE); // Diente derecho
-    display.display();
-    delay(50); // 30 pasos * 100ms = 3 segundos
-  }
-  sonrie();
-}
 
+  int j_inicial = inversa ? 10 : pasos;
+  int j_final = inversa ? pasos : 10;
+  int j_incremento = inversa ? 3 : -3;
 
-/////////////////////
-void tristeASerio() {
-  triste();
-  const int pasos = 30;
-  for (int j = 10; j <= pasos; j+=3) {
-    display.clearDisplay();
-      // Cara triste
-    for (int i = 0; i <= ANCHO_LINEA; i++) {
-      // El centro del círculo está en (CENTRO_X_1, CENTRO_Y_1) con un radio de RADIO_1 y dibuja ANCHO_LINEA veces para darle espesor
-      display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 1, SSD1306_WHITE); // Cuarto inferior izquierdo
-      display.drawCircleHelper(CENTRO_X_1-1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 2, SSD1306_WHITE); // Cuarto inferior derecho
-    }
-
-    display.display();
-    delay(100); 
-  }
-  serio();
-}
-
-/////////////////////
-void serioATriste() {
-  serio();
-   const int pasos = 30;
-  for (int j = pasos; j >= 10; j-=3) {
+  for (int j = j_inicial; (inversa ? j <= j_final : j >= j_final); j += j_incremento) {
     display.clearDisplay();
     // Cara triste
     for (int i = 0; i <= ANCHO_LINEA; i++) {
       // El centro del círculo está en (CENTRO_X_1, CENTRO_Y_1) con un radio de RADIO_1 y dibuja ANCHO_LINEA veces para darle espesor
-      display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 1, SSD1306_WHITE); // Cuarto inferior izquierdo
-      display.drawCircleHelper(CENTRO_X_1-1, CENTRO_Y_1+RADIO_1*j/8, (RADIO_1*j/8)-i, 2, SSD1306_WHITE); // Cuarto inferior derecho
+      display.drawCircleHelper(CENTRO_X_1, CENTRO_Y_1 + RADIO_1 * j / 8, (RADIO_1 * j / 8) - i, 1, SSD1306_WHITE); // Cuarto inferior izquierdo
+      display.drawCircleHelper(CENTRO_X_1 - 1, CENTRO_Y_1 + RADIO_1 * j / 8, (RADIO_1 * j / 8) - i, 2, SSD1306_WHITE); // Cuarto inferior derecho
     }
     display.display();
-    delay(100); 
+    delay(100);
   }
-  triste();
+
+  if (inversa) {
+    serio();
+  } else {
+    triste();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -185,87 +201,82 @@ void sorpresa() {
   display.display();
 }
 
-void serioASorpresa() {
-  serio();
+/*
+  Anima la transición entre la cara seria y la cara de sorpresa.
+  - Si 'inversa' es 'false', la animación va de 'serio' a 'sorpresa'.
+  - Si 'inversa' es 'true', la animación va de 'sorpresa' a 'serio'.
+  Esta función unificada reduce la duplicación de código y el tamaño del programa.
+*/
+void animarSorpresa(bool inversa) {
+  if (inversa) {
+    sorpresa();
+  } else {
+    serio();
+  }
+
   const int pasos = 30;
   const int umbral_fase = pasos * 0.6; // Punto de cambio entre fases
-  
+
   for (int j = 0; j <= pasos; j++) {
     display.clearDisplay();
-    
-    if (j < umbral_fase) {
-      // FASE 1: Los trazos horizontales se acortan hacia el centro
-      int acortamiento = (RADIO_1 * j) / umbral_fase;
-      
-      for (int i = 0; i <= ANCHO_LINEA; i++) {
-        display.drawLine(CENTRO_X_1 - RADIO_1 + acortamiento, CENTRO_Y_1 + i, 
-                         CENTRO_X_1 + RADIO_1 - acortamiento, CENTRO_Y_1 + i, 
-                         SSD1306_WHITE);
+
+    if (inversa) { // De sorpresa a serio
+      if (j < umbral_fase) {
+        // FASE 1: El círculo baja y se achica
+        int avance = j;
+        int pos_y = RADIO_2 + ((CENTRO_Y_1 - RADIO_2) * avance) / umbral_fase;
+        int radio_actual = RADIO_2 - ((RADIO_2 - 2) * avance) / umbral_fase;
+        int radio_interior = RADIO_2 / 2 - ((RADIO_2 / 2) * avance) / umbral_fase;
+
+        display.fillCircle(SCREEN_WIDTH / 2, pos_y, radio_actual, SSD1306_WHITE);
+        if (radio_interior > 0) {
+          display.fillCircle(SCREEN_WIDTH / 2, pos_y, radio_interior, SSD1306_BLACK);
+        }
+      } else {
+        // FASE 2: La línea se expande desde el centro
+        int pasos_fase2 = pasos - umbral_fase;
+        int avance = j - umbral_fase;
+        int acortamiento = RADIO_1 - (RADIO_1 * avance) / pasos_fase2;
+
+        for (int i = 0; i <= ANCHO_LINEA; i++) {
+          display.drawLine(CENTRO_X_1 - RADIO_1 + acortamiento, CENTRO_Y_1 + i,
+                           CENTRO_X_1 + RADIO_1 - acortamiento, CENTRO_Y_1 + i,
+                           SSD1306_WHITE);
+        }
       }
-      
-    } else {
-      // FASE 2: La línea se transforma en círculo y sube
-      int pasos_fase2 = pasos - umbral_fase;
-      int avance = j - umbral_fase;
-      
-      int pos_y = CENTRO_Y_1 - ((CENTRO_Y_1 - RADIO_2) * avance) / pasos_fase2;
-      int radio_actual = 2 + ((RADIO_2 - 2) * avance) / pasos_fase2;
-      int radio_interior = (RADIO_2 * avance) / (pasos_fase2 * 2);
-      
-      display.fillCircle(SCREEN_WIDTH/2, pos_y, radio_actual, SSD1306_WHITE);
-      if (radio_interior > 0) {
-        display.fillCircle(SCREEN_WIDTH/2, pos_y, radio_interior, SSD1306_BLACK);
+    } else { // De serio a sorpresa
+      if (j < umbral_fase) {
+        // FASE 1: La línea se acorta hacia el centro
+        int acortamiento = (RADIO_1 * j) / umbral_fase;
+
+        for (int i = 0; i <= ANCHO_LINEA; i++) {
+          display.drawLine(CENTRO_X_1 - RADIO_1 + acortamiento, CENTRO_Y_1 + i,
+                           CENTRO_X_1 + RADIO_1 - acortamiento, CENTRO_Y_1 + i,
+                           SSD1306_WHITE);
+        }
+      } else {
+        // FASE 2: La línea se transforma en círculo y sube
+        int pasos_fase2 = pasos - umbral_fase;
+        int avance = j - umbral_fase;
+        int pos_y = CENTRO_Y_1 - ((CENTRO_Y_1 - RADIO_2) * avance) / pasos_fase2;
+        int radio_actual = 2 + ((RADIO_2 - 2) * avance) / pasos_fase2;
+        int radio_interior = (RADIO_2 * avance) / (pasos_fase2 * 2);
+
+        display.fillCircle(SCREEN_WIDTH / 2, pos_y, radio_actual, SSD1306_WHITE);
+        if (radio_interior > 0) {
+          display.fillCircle(SCREEN_WIDTH / 2, pos_y, radio_interior, SSD1306_BLACK);
+        }
       }
     }
-    
     display.display();
     // delay(50);
   }
-  
-  sorpresa();
-}
 
-/////
-void sorpresaASerio() {
-  sorpresa();
-  const int pasos = 30;
-  const int umbral_fase = pasos * 0.6; // Punto de cambio entre fases
-  
-  for (int j = 0; j <= pasos; j++) {
-    display.clearDisplay();
-    
-    if (j < umbral_fase) {
-      // FASE 1: El círculo baja y se achica
-      int avance = j;
-      
-      int pos_y = RADIO_2 + ((CENTRO_Y_1 - RADIO_2) * avance) / umbral_fase;
-      int radio_actual = RADIO_2 - ((RADIO_2 - 2) * avance) / umbral_fase;
-      int radio_interior = RADIO_2/2 - ((RADIO_2/2) * avance) / umbral_fase;
-      
-      display.fillCircle(SCREEN_WIDTH/2, pos_y, radio_actual, SSD1306_WHITE);
-      if (radio_interior > 0) {
-        display.fillCircle(SCREEN_WIDTH/2, pos_y, radio_interior, SSD1306_BLACK);
-      }
-      
-    } else {
-      // FASE 2: La línea se expande desde el centro hacia los extremos
-      int pasos_fase2 = pasos - umbral_fase;
-      int avance = j - umbral_fase;
-      
-      int acortamiento = RADIO_1 - (RADIO_1 * avance) / pasos_fase2;
-      
-      for (int i = 0; i <= ANCHO_LINEA; i++) {
-        display.drawLine(CENTRO_X_1 - RADIO_1 + acortamiento, CENTRO_Y_1 + i, 
-                         CENTRO_X_1 + RADIO_1 - acortamiento, CENTRO_Y_1 + i, 
-                         SSD1306_WHITE);
-      }
-    }
-    
-    display.display();
-    //delay(50);
+  if (inversa) {
+    serio();
+  } else {
+    sorpresa();
   }
-  
-  serio();
 }
 
 
@@ -274,16 +285,16 @@ void sorpresaASerio() {
 void loop() {
   sonrie();
   delay(500);
-  rieASerio();
+  animarSonrisa(false); // sonrie -> serio
   delay(500);
-  serioATriste();
+  animarTristeza(false); // serio -> triste
   delay(500);
-  tristeASerio(); 
+  animarTristeza(true); // triste -> serio
   delay(500);
-  serioASorpresa();
+  animarSorpresa(false); // serio -> sorpresa
   delay(500);
-  sorpresaASerio();
+  animarSorpresa(true); // sorpresa -> serio
   delay(500);
-  serioARie();
+  animarSonrisa(true); // serio -> sonrie
   delay(500);
 }
