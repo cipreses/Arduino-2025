@@ -1,0 +1,154 @@
+#include <Otto.h>
+
+//----------------------------------------------------------------
+//-- Otto All moves test
+//-- Otto DIY invests time and resources providing open source code and hardware, 
+//-- please support by purchasing kits from https://www.ottodiy.com/
+//-- Make sure to have installed all libraries: https://github.com/OttoDIY/OttoDIYLib
+//-----------------------------------------------------------------
+#include <Otto.h>
+#include <Servo.h>    // Librería estándar de Arduino para controlar servos
+Otto Otto;  //This is Otto!
+Servo servoCuello;
+#define LeftLeg 2 
+#define RightLeg 3
+#define LeftFoot 4 
+#define RightFoot 5 
+#define Buzzer  13 
+#define Trigger 8 // ultrasonic sensor trigger pin
+#define Echo 9 // ultrasonic sensor echo pin
+#define PIN_CUELLO 6 // Pin donde conectaste el servo del cuello
+
+long ultrasound() {
+   long duration, distance;
+   digitalWrite(Trigger,LOW);
+   delayMicroseconds(2);
+   digitalWrite(Trigger, HIGH);
+   delayMicroseconds(10);
+   digitalWrite(Trigger, LOW);
+   duration = pulseIn(Echo, HIGH);
+   distance = duration/58;
+   return distance;
+}
+
+void cogote(){
+// Mirar a la izquierda (35°)
+  servoCuello.write(35);
+  delay(500);
+// Mirar a la derecha (125°)
+  servoCuello.write(125);
+  delay(500);
+// Volver al centro (90°)
+  servoCuello.write(90);
+}
+///////////////////////////////////////////////////////////////////
+//-- Setup ------------------------------------------------------//
+///////////////////////////////////////////////////////////////////
+void setup(){
+  Otto.init(LeftLeg, RightLeg, LeftFoot, RightFoot, true, Buzzer); //Set the servo pins and Buzzer pin
+ // Otto.initMATRIX( DIN, CS, CLK, Orientation);
+  pinMode(Trigger, OUTPUT); 
+  pinMode(Echo, INPUT); 
+  servoCuello.attach(PIN_CUELLO);
+  Otto.sing(S_connection); //Otto wake up!
+  Otto.home();
+  servoCuello.write(90);
+    delay(50);
+  Otto.playGesture(OttoHappy);
+}
+
+///////////////////////////////////////////////////////////////////
+//-- Principal Loop ---------------------------------------------//
+///////////////////////////////////////////////////////////////////
+void loop() { 
+//   Otto.walk(2,1000,1); //2 steps, "TIME". IF HIGHER THE VALUE THEN SLOWER (from 600 to 1400), 1 FORWARD
+//   Otto.walk(2,1000,-1); //2 steps, T, -1 BACKWARD 
+//   Otto.turn(2,1000,1);//3 steps turning LEFT
+//   delay (1000);
+//   Otto._tone(10, 3, 1);
+//   Otto.bendTones (100, 200, 1.04, 10, 10);
+//     Otto.home();
+//     delay(100);  
+//  delay(1000);
+//   Otto.turn(2,1000,-1);//3 steps turning RIGHT 
+//   Otto.bend (1,500,1); //usually steps =1, T=2000
+//   Otto.bend (1,2000,-1);     
+//  //Otto.shakeLeg (1,1500, 1);
+//     Otto.home();
+//     delay(100);
+  
+//   Otto.shakeLeg (1,2000,-1);
+ 
+//   Otto.moonwalker(3, 1000, 25,1); //LEFT
+//   Otto.moonwalker(3, 1000, 25,-1); //RIGHT  
+//   Otto.crusaito(2, 1000, 20,1);
+//   Otto.crusaito(2, 1000, 20,-1);
+//     delay(100); 
+//   Otto.flapping(2, 1000, 20,1);
+//   Otto.flapping(2, 1000, 20,-1);
+//     delay(100);        
+//     Otto.swing(2, 1000, 20);
+//   Otto.tiptoeSwing(2, 1000, 20);
+//   Otto.jitter(2, 1000, 20); //(small T)
+//   Otto.updown(2, 1500, 25);  // 20 = H "HEIGHT of movement"
+//       delay(10000); 
+//   Otto.ascendingTurn(2, 1000, 50);    
+//   delay(10000); 
+//   Otto.jump(1,500); // It doesn't really jumpl ;P
+//   Otto.home();
+//      delay(100); 
+//   // Otto.sing(S_cuddly);
+//   // Otto.sing(S_OhOoh);
+//   // Otto.sing(S_OhOoh2);
+//   // Otto.sing(S_surprise);
+//   // Otto.sing(S_buttonPushed);       
+//   // Otto.sing(S_mode1);        
+//   // Otto.sing(S_mode2);         
+//   // Otto.sing(S_mode3);  
+//   // Otto.sing(S_sleeping);
+//   // Otto.sing(S_fart1);
+//   // Otto.sing(S_fart2);
+//   // Otto.sing(S_fart3);
+//   // Otto.sing(S_happy);
+//   // Otto.sing(S_happy_short);                   
+//   // Otto.sing(S_superHappy);   
+//   // Otto.sing(S_sad);               
+//   // Otto.sing(S_confused);
+//   // Otto.sing(S_disconnection);
+//     delay(10000);  
+  Otto.playGesture(OttoHappy);
+       delay(2000); 
+  cogote();
+  delay(1000); 
+  Otto.playGesture(OttoSuperHappy);
+       delay(2000);  
+  Otto.playGesture(OttoSad);
+       delay(2000);  
+  Otto.playGesture(OttoVictory); 
+       delay(2000);  
+  Otto.playGesture(OttoAngry);
+       delay(2000);   
+  Otto.playGesture(OttoSleeping);
+       delay(2000);  
+  Otto.playGesture(OttoFretful);
+  cogote();
+  Otto.playGesture(OttoFretful);
+  delay (500);
+  Otto.playGesture(OttoLove);
+       delay(2000);  
+  //Otto.playGesture(OttoConfused);
+       delay(2000);          
+  Otto.playGesture(OttoFart);
+       delay(2000);  
+  Otto.playGesture(OttoWave);
+       delay(2000);  
+  Otto.playGesture(OttoMagic);
+       delay(2000);  
+  Otto.playGesture(OttoFail);
+         delay(2000);  
+    do
+    {}
+    while  (ultrasound() > 20);
+      
+ 
+}
